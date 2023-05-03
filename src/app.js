@@ -42,13 +42,23 @@ function formatStdin(input) {
 }
 
 function move(pos, com, size) {
-  if (com === 1) {
-    stepForward(pos);
-  } else if (com === 2) {
-    stepBackwards(pos);
-  } else {
-    rotate(pos, com);
+  switch (com) {
+    case 1:
+      pos = stepForward(pos);
+      break;
+    case 2:
+      pos = stepBackwards(pos);
+      break;
+    case 3:
+      pos = rotateClockwise(pos);
+      break;
+    case 4:
+      pos = rotateAntiClockwise(pos);
+      break;
+    default:
+      break;
   }
+  return pos;
 }
 
 function stepForward(pos) {
@@ -90,8 +100,26 @@ function stepBackwards(pos) {
   }
   return [x, y, z];
 }
-function rotate(pos, com) {
-  return;
+function rotateClockwise(pos) {
+  let [x, y, z] = pos;
+  const directions = ['E', 'S', 'W', 'N'];
+  let i = directions.indexOf(z);
+  i = i !== 3 ? ++i : 0;
+  return [x, y, directions[i]];
 }
 
-module.exports = { formatStdin, move, stepForward, stepBackwards, rotate };
+function rotateAntiClockwise(pos) {
+  let [x, y, z] = pos;
+  const directions = ['E', 'S', 'W', 'N'];
+  let i = directions.indexOf(z);
+  i = i !== 0 ? --i : 3;
+  return [x, y, directions[i]];
+}
+module.exports = {
+  formatStdin,
+  move,
+  stepForward,
+  stepBackwards,
+  rotateClockwise,
+  rotateAntiClockwise,
+};

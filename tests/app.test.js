@@ -1,4 +1,10 @@
-const { formatStdin, stepForward, stepBackwards } = require('../src/app');
+const {
+  formatStdin,
+  stepForward,
+  stepBackwards,
+  rotateClockwise,
+  rotateAntiClockwise,
+} = require('../src/app');
 
 describe('stdin is correctly processed ', () => {
   test.each`
@@ -31,5 +37,29 @@ describe('make a step backwards from ', () => {
     ${[1, 2, 'E']} | ${[0, 2, 'E']}
   `('$position to $expected', ({ position, expected }) => {
     expect(stepBackwards(position)).toEqual(expected);
+  });
+});
+
+describe('rotate clockwise from ', () => {
+  test.each`
+    position       | expected
+    ${[1, 2, 'N']} | ${[1, 2, 'E']}
+    ${[1, 2, 'S']} | ${[1, 2, 'W']}
+    ${[1, 2, 'W']} | ${[1, 2, 'N']}
+    ${[1, 2, 'E']} | ${[1, 2, 'S']}
+  `('$position to $expected', ({ position, expected }) => {
+    expect(rotateClockwise(position)).toEqual(expected);
+  });
+});
+
+describe('rotate antiClockwise from ', () => {
+  test.each`
+    position       | expected
+    ${[1, 2, 'N']} | ${[1, 2, 'W']}
+    ${[1, 2, 'S']} | ${[1, 2, 'E']}
+    ${[1, 2, 'W']} | ${[1, 2, 'S']}
+    ${[1, 2, 'E']} | ${[1, 2, 'N']}
+  `('$position to $expected', ({ position, expected }) => {
+    expect(rotateAntiClockwise(position)).toEqual(expected);
   });
 });
