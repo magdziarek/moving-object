@@ -24,7 +24,7 @@ function processStdin(line) {
   try {
     const commands = formatStdin(line);
     if (isEveryCommandCorrect(commands)) {
-      result = findFinalPosition(commands, start);
+      result = findFinalPosition(commands, start, tableSize);
     } else {
       console.log('Wrong command');
     }
@@ -48,15 +48,16 @@ function isEveryCommandCorrect(commands) {
   return commands.every((i) => i <= 4 && i >= 0);
 }
 
-function findFinalPosition(commands, start) {
-  const finalPosition = commands.reduce((position, command) => {
-    if (command === 0) {
-      return position;
+function findFinalPosition(commands, start, limit) {
+  let pos = start;
+  for (let com of commands) {
+    if (com === 0) {
+      return pos;
+    } else {
+      pos = move(pos, com);
     }
-    position = move(position, command);
-    return position;
-  }, start);
-  return finalPosition.slice(0, 2);
+  }
+  return pos;
 }
 
 function move(pos, com) {
@@ -65,7 +66,7 @@ function move(pos, com) {
       pos = stepForward(pos);
       break;
     case 2:
-      pos = stepBackwards(pos);
+      pos = stepBackwards(pos, limit);
       break;
     case 3:
       pos = rotateClockwise(pos);
