@@ -4,44 +4,58 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-
-const tableSize = [process.argv[2], process.argv[3]];
-// at the start always face north
-const start = [process.argv[4], process.argv[5], 'N'];
+const start = [];
+const tableSize = [];
+try {
+  const args = formatStdin(process.argv[2], true);
+  tableSize.push(args[0], args[1]);
+  // at the start always face north
+  start.push(args[2], args[3], 'N');
+} catch (err) {
+  console.log(err);
+}
 
 rl.on('line', (line) => {
   let result;
   try {
     const commands = formatStdin(line);
-    result = commands.reduce((position, command) => {
-      if (command === 0) {
-        process.exit();
-      }
-      position = move(position, command);
-    }, start);
+    if (isEveryCommandCorrect(commands)) {
+      result = findFinalPosition(commands, start);
+    }
     rl.on('close', () => {
       console.log(result);
     });
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   } finally {
     process.exit();
   }
 });
 
 function formatStdin(input) {
-  try {
-    return input
-      .trim()
-      .split(',')
-      .map(Number)
-      .filter((i) => i <= 4 && i >= 0);
-  } catch (err) {
-    throw `Wrong input: ${err}`;
-  }
+  return input
+    .trim()
+    .split(',')
+    .map(Number)
+    .filter((i) => !isNaN(i));
 }
 
-function move(pos, com, size) {
+function isEveryCommandCorrect(commands) {
+  return commands.every((i) => i <= 4 && i >= 0);
+}
+
+function findFinalPosition(commands, start) {
+  return commands.reduce((position, command) => {
+    console.log('position', position);
+    if (command === 0) {
+      return position;
+    }
+    position = move(position, command);
+    return position;
+  }, start);
+}
+
+function move(pos, com) {
   switch (com) {
     case 1:
       pos = stepForward(pos);
@@ -115,6 +129,7 @@ function rotateAntiClockwise(pos) {
   i = i !== 0 ? --i : 3;
   return [x, y, directions[i]];
 }
+
 module.exports = {
   formatStdin,
   move,
@@ -122,4 +137,5 @@ module.exports = {
   stepBackwards,
   rotateClockwise,
   rotateAntiClockwise,
+  findFinalPosition,
 };

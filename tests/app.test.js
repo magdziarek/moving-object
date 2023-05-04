@@ -4,6 +4,8 @@ const {
   stepBackwards,
   rotateClockwise,
   rotateAntiClockwise,
+  move,
+  findFinalPosition,
 } = require('../src/app');
 
 describe('stdin is correctly processed ', () => {
@@ -61,5 +63,15 @@ describe('rotate antiClockwise from ', () => {
     ${[1, 2, 'E']} | ${[1, 2, 'N']}
   `('$position to $expected', ({ position, expected }) => {
     expect(rotateAntiClockwise(position)).toEqual(expected);
+  });
+});
+
+describe('find final position from ', () => {
+  test.each`
+    start          | commands           | size      | expected
+    ${[1, 2, 'N']} | ${[1, 1, 4, 1, 2]} | ${[5, 5]} | ${[1, 0, 'W']}
+    ${[4, 4, 'N']} | ${[1, 1, 3, 2, 2]} | ${[5, 5]} | ${[2, 2, 'E']}
+  `('$start to $expected', ({ start, commands, size, expected }) => {
+    expect(findFinalPosition(commands, start)).toEqual(expected);
   });
 });
