@@ -7,7 +7,7 @@ const rl = readline.createInterface({
 const start = [];
 const tableSize = [];
 try {
-  const args = formatStdin(process.argv[2], true);
+  const args = formatStdin(process.argv[2]);
   tableSize.push(args[0], args[1]);
   // at the start always face north
   start.push(args[2], args[3], 'N');
@@ -16,21 +16,25 @@ try {
 }
 
 rl.on('line', (line) => {
+  processStdin(line);
+});
+
+function processStdin(line) {
   let result;
   try {
     const commands = formatStdin(line);
     if (isEveryCommandCorrect(commands)) {
       result = findFinalPosition(commands, start);
+    } else {
+      console.log('Wrong command');
     }
-    rl.on('close', () => {
-      console.log(result);
-    });
   } catch (err) {
     console.log(err.message);
   } finally {
+    console.log(result);
     process.exit();
   }
-});
+}
 
 function formatStdin(input) {
   return input
@@ -45,14 +49,14 @@ function isEveryCommandCorrect(commands) {
 }
 
 function findFinalPosition(commands, start) {
-  return commands.reduce((position, command) => {
-    console.log('position', position);
+  const finalPosition = commands.reduce((position, command) => {
     if (command === 0) {
       return position;
     }
     position = move(position, command);
     return position;
   }, start);
+  return finalPosition.slice(0, 2);
 }
 
 function move(pos, com) {

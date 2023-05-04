@@ -69,8 +69,8 @@ describe('rotate antiClockwise from ', () => {
 describe('find final position from ', () => {
   test.each`
     start          | commands           | size      | expected
-    ${[1, 2, 'N']} | ${[1, 1, 4, 1, 2]} | ${[5, 5]} | ${[1, 0, 'W']}
-    ${[4, 4, 'N']} | ${[1, 1, 3, 2, 2]} | ${[5, 5]} | ${[2, 2, 'E']}
+    ${[1, 2, 'N']} | ${[1, 1, 4, 1, 2]} | ${[5, 5]} | ${[1, 0]}
+    ${[4, 4, 'N']} | ${[1, 1, 3, 2, 2]} | ${[5, 5]} | ${[2, 2]}
   `('$start to $expected', ({ start, commands, size, expected }) => {
     expect(findFinalPosition(commands, start)).toEqual(expected);
   });
