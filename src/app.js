@@ -8,9 +8,8 @@ const start = [];
 const tableSize = [];
 try {
   const args = formatStdin(process.argv[2]);
-  tableSize.push(args[0], args[1]);
-  // at the start always face north
-  start.push(args[2], args[3], 'N');
+  start.push(args[0], args[1], 'N');
+  tableSize.push(args[2], args[3]);
 } catch (err) {
   console.log(err);
 }
@@ -24,14 +23,14 @@ function processStdin(line) {
   try {
     const commands = formatStdin(line);
     if (isEveryCommandCorrect(commands)) {
-      result = findFinalPosition(commands, start, tableSize);
+      result = findFinalPosition(start, commands, tableSize);
     } else {
       console.log('Wrong command');
     }
-  } catch (err) {
-    console.log(err.message);
+    process.stdout.write(`[${result}]\n`);
+  } catch {
+    process.stdout.write(`[-1, -1]\n`);
   } finally {
-    console.log(result);
     process.exit();
   }
 }
@@ -48,72 +47,93 @@ function isEveryCommandCorrect(commands) {
   return commands.every((i) => i <= 4 && i >= 0);
 }
 
-function findFinalPosition(commands, start, limit) {
-  let pos = start;
-  for (let com of commands) {
-    if (com === 0) {
-      return pos;
-    } else {
-      pos = move(pos, com);
+function findFinalPosition(start, commands, limit) {
+  try {
+    let pos = start;
+    for (let com of commands) {
+      if (com === 0) {
+        return pos.slice(0, 2);
+      } else {
+        pos = move(pos, com, limit);
+      }
     }
+    return pos.slice(0, 2);
+  } catch (err) {
+    throw err;
+  }
+}
+
+function move(pos, com, limit) {
+  try {
+    switch (com) {
+      case 1:
+        pos = stepForward(pos, limit);
+        break;
+      case 2:
+        pos = stepBackwards(pos, limit);
+        break;
+      case 3:
+        pos = rotateClockwise(pos);
+        break;
+      case 4:
+        pos = rotateAntiClockwise(pos);
+        break;
+      default:
+        break;
+    }
+  } catch (err) {
+    throw err;
   }
   return pos;
 }
 
-function move(pos, com) {
-  switch (com) {
-    case 1:
-      pos = stepForward(pos);
-      break;
-    case 2:
-      pos = stepBackwards(pos, limit);
-      break;
-    case 3:
-      pos = rotateClockwise(pos);
-      break;
-    case 4:
-      pos = rotateAntiClockwise(pos);
-      break;
-    default:
-      break;
-  }
-  return pos;
-}
+const throwError = () => {
+  throw 'Off the limit!';
+};
 
-function stepForward(pos) {
+const increase = (val, limit) => (val < limit - 1 ? ++val : throwError());
+const decrease = (val) => (val > 0 ? --val : throwError());
+
+function stepForward(pos, limit) {
   let [x, y, z] = pos;
-  switch (z) {
-    case 'N':
-      y--;
-      break;
-    case 'S':
-      y++;
-      break;
-    case 'W':
-      x--;
-      break;
-    case 'E':
-      x++;
-      break;
-    default:
+  const [maxX, maxY] = limit;
+  try {
+    switch (z) {
+      case 'N':
+        y = decrease(y);
+        break;
+      case 'S':
+        y = increase(y, maxY);
+        break;
+      case 'W':
+        x = decrease(x);
+        break;
+      case 'E':
+        x = increase(x, maxX);
+        break;
+      default:
+    }
+  } catch (err) {
+    throw err;
   }
   return [x, y, z];
 }
 
-function stepBackwards(pos) {
+function stepBackwards(pos, limit) {
   let [x, y, z] = pos;
+  const [maxX, maxY] = limit;
   switch (z) {
     case 'N':
-      y++;
+      y = increase(y, maxY);
       break;
     case 'S':
-      y--;
+      y = decrease(y);
       break;
     case 'W':
-      x++;
+      x = increase(x, maxX);
       break;
     case 'E':
-      x--;
+      x = decrease(x);
       break;
     default:
   }

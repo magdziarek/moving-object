@@ -18,27 +18,39 @@ describe('stdin is correctly processed ', () => {
   });
 });
 
+describe('move from ', () => {
+  test.each`
+    position       | command | limit     | expected
+    ${[1, 2, 'N']} | ${1}    | ${[5, 5]} | ${[1, 1, 'N']}
+    ${[1, 2, 'S']} | ${2}    | ${[5, 5]} | ${[1, 1, 'S']}
+    ${[1, 2, 'W']} | ${3}    | ${[5, 5]} | ${[1, 2, 'N']}
+    ${[1, 2, 'E']} | ${4}    | ${[5, 5]} | ${[1, 2, 'N']}
+  `('$position to $expected', ({ position, command, limit, expected }) => {
+    expect(move(position, command, limit)).toEqual(expected);
+  });
+});
+
 describe('make a step forward from ', () => {
   test.each`
-    position       | expected
-    ${[1, 2, 'N']} | ${[1, 1, 'N']}
-    ${[1, 2, 'S']} | ${[1, 3, 'S']}
-    ${[1, 2, 'W']} | ${[0, 2, 'W']}
-    ${[1, 2, 'E']} | ${[2, 2, 'E']}
-  `('$position to $expected', ({ position, expected }) => {
-    expect(stepForward(position)).toEqual(expected);
+    position       | limit     | expected
+    ${[1, 2, 'N']} | ${[5, 5]} | ${[1, 1, 'N']}
+    ${[1, 2, 'S']} | ${[5, 5]} | ${[1, 3, 'S']}
+    ${[1, 2, 'W']} | ${[5, 5]} | ${[0, 2, 'W']}
+    ${[1, 2, 'E']} | ${[5, 5]} | ${[2, 2, 'E']}
+  `('$position to $expected', ({ position, limit, expected }) => {
+    expect(stepForward(position, limit)).toEqual(expected);
   });
 });
 
 describe('make a step backwards from ', () => {
   test.each`
-    position       | expected
-    ${[1, 2, 'N']} | ${[1, 3, 'N']}
-    ${[1, 2, 'S']} | ${[1, 1, 'S']}
-    ${[1, 2, 'W']} | ${[2, 2, 'W']}
-    ${[1, 2, 'E']} | ${[0, 2, 'E']}
-  `('$position to $expected', ({ position, expected }) => {
-    expect(stepBackwards(position)).toEqual(expected);
+    position       | limit     | expected
+    ${[1, 2, 'N']} | ${[5, 5]} | ${[1, 3, 'N']}
+    ${[1, 2, 'S']} | ${[5, 5]} | ${[1, 1, 'S']}
+    ${[1, 2, 'W']} | ${[5, 5]} | ${[2, 2, 'W']}
+    ${[1, 2, 'E']} | ${[5, 5]} | ${[0, 2, 'E']}
+  `('$position to $expected', ({ position, limit, expected }) => {
+    expect(stepBackwards(position, limit)).toEqual(expected);
   });
 });
 
@@ -68,10 +80,10 @@ describe('rotate antiClockwise from ', () => {
 
 describe('find final position from ', () => {
   test.each`
-    start          | commands           | size      | expected
+    start          | commands           | limit     | expected
     ${[1, 2, 'N']} | ${[1, 1, 4, 1, 2]} | ${[5, 5]} | ${[1, 0]}
     ${[4, 4, 'N']} | ${[1, 1, 3, 2, 2]} | ${[5, 5]} | ${[2, 2]}
-  `('$start to $expected', ({ start, commands, size, expected }) => {
-    expect(findFinalPosition(commands, start)).toEqual(expected);
+  `('$start to $expected', ({ start, commands, limit, expected }) => {
+    expect(findFinalPosition(start, commands, limit)).toEqual(expected);
   });
 });
