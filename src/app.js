@@ -174,4 +174,5 @@ module.exports = {
   rotateClockwise,
   rotateAntiClockwise,
   findFinalPosition,
+  isEveryCommandCorrect,
 };

@@ -6,6 +6,7 @@ const {
   rotateAntiClockwise,
   move,
   findFinalPosition,
+  isEveryCommandCorrect,
 } = require('../src/app');
 
 describe('stdin is correctly processed ', () => {
@@ -15,6 +16,17 @@ describe('stdin is correctly processed ', () => {
     ${'1,2,3,2,4,0,N,F'} | ${[1, 2, 3, 2, 4, 0]}
   `('$input to $expected', ({ input, expected }) => {
     expect(formatStdin(input)).toEqual(expected);
+  });
+});
+
+describe('given commands are within the range 0-4', () => {
+  test.each`
+    input                           | expected
+    ${[1, 2, 3, 2, 4, 0]}           | ${true}
+    ${[1, 2, 3, 2, 4, 0, 'N', 'F']} | ${false}
+    ${[1, 2, 3, 2, 4, 0, 5, 10]}    | ${false}
+  `('$input to $expected', ({ input, expected }) => {
+    expect(isEveryCommandCorrect(input)).toBe(expected);
   });
 });
 
