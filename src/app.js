@@ -1,5 +1,14 @@
 const readline = require('readline');
 
+console.log(
+  `Enter commands: 
+  0 to quit, 
+  1 to move forward, 
+  2 to move backwards, 
+  3 to turn clockwise, 
+  4 to turn anticlockwise`
+);
+
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -27,8 +36,10 @@ function processStdin(line) {
     } else {
       console.log('Wrong command');
     }
+    console.log('Final position:');
     process.stdout.write(`[${result}]\n`);
   } catch {
+    console.log('Final position (not on the board):');
     process.stdout.write(`[-1, -1]\n`);
   } finally {
     process.exit();
