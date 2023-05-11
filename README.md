@@ -23,3 +23,10 @@ The object always has a direction (north, east, south or west). A simulation alw
 - 4 = rotate counterclockwise 90 degrees (eg west to south)
 
 The program will return the final position of the object unless the object was moved outside of the set boundaries, in which case [-1,-1] will be returned.
+
+### Testing
+
+To test the application:
+
+1. Run `npm i` to install dependencies
+2. Run `npm test` to run unit tests
