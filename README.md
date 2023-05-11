@@ -4,9 +4,10 @@ The quickest way to run is opening the app.js file with Node including the follo
 
 - two digits describing the initial position of the object on the board, e.g. 0,0
 - two digits defining the size of the board, e.g. 5,5
-  The four digits should be separated with commas and entered as one argument, e.g.:
-  `node ./src/app.js 2,3,5,5`
-  will tell the program that the initial position is x=2,y=2 and the board is of size 5x5
+
+The four digits should be separated with commas and entered as one argument, e.g.:
+`node ./src/app.js 2,3,5,5`
+will tell the program that the initial position is x=2,y=2 and the board is of size 5x5
 
 ### How to use
 
